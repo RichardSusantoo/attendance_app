@@ -9,7 +9,13 @@
       width: 100vw;
     "
   >
-    <h1>Hadeer</h1>
+    <div>
+      <img
+        src="../assets/hadeer-high-resolution-logo-transparent.png"
+        width="200"
+        class="mb-4"
+      />
+    </div>
 
     <div style="display: flex; flex-direction: column">
       <Button

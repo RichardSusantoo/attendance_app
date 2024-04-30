@@ -3,6 +3,13 @@
     class="container d-flex justify-content-around align-items-center vh-100"
   >
     <div class="w-50">
+      <div>
+        <img
+          src="../assets/hadeer-high-resolution-logo-transparent.png"
+          width="200"
+          class="mb-4"
+        />
+      </div>
       <h1>Register</h1>
     </div>
 
@@ -31,13 +38,6 @@
         ></InputText>
       </div>
 
-      <div class="d-flex justify-content-flex-start">
-        <div class="d-flex flex-column">
-          <label for="scan">Deteksi Wajah</label>
-          <Button></Button>
-        </div>
-      </div>
-
       <div class="d-flex justify-content-end gap-2">
         <Button
           class="button"
@@ -45,7 +45,11 @@
           severity="danger"
           @click="goBack"
         ></Button>
-        <Button class="button" label="Submit"></Button>
+        <Button
+          class="button"
+          label="Scan Wajah & Submit"
+          @click="submitData"
+        ></Button>
       </div>
     </div>
   </div>
@@ -53,15 +57,42 @@
 
 <script setup>
 import router from "@/router";
+import { ref } from "vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+import axios from "axios";
+
+const namaValue = ref();
+const nimValue = ref();
+const emailValue = ref();
+const passwordValue = ref();
+
+const submitData = () => {
+  const path = "http://127.0.0.1:5000/registeruser";
+  axios
+    .post(path, {
+      fullname: namaValue.value,
+      nim: nimValue.value,
+      email: emailValue.value,
+      password: passwordValue.value,
+    })
+    .then((response) => {
+      console.log(response);
+
+      router.push("/");
+    })
+    .catch((err) => {
+      console.log(namaValue);
+      console.log(err);
+    });
+};
 
 const goBack = () => {
   router.push("/");
 };
 </script>
 
-<style>
+<style scoped>
 .input {
   border-radius: 20px;
 }

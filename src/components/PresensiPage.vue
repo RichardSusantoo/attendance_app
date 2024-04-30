@@ -6,22 +6,43 @@
       <h1><b>Presensi</b></h1>
     </div>
 
-    <div class="shadow-box">
+    <div class="shadow-box" v-if="data">
       <div class="kelas1">
-        <h1>TES</h1>
-        <h2>JAM</h2>
-        <p>Attendance Status :</p>
+        <h1 v-if="data[0]?.class_name">{{ data[0]?.class_name }}</h1>
+        <p v-else>No Class Today</p>
+        <h2 v-if="data[0]?.class_time">{{ data[0]?.class_time }}</h2>
+        <p v-if="data.length > 0">
+          Attendance Status :
+          <span
+            :class="{
+              red: !isMarked(data[0]?.status),
+              green: isMarked(data[0]?.status),
+            }"
+            >{{ data[0]?.status }}</span
+          >
+        </p>
       </div>
 
       <div class="kelas2">
-        <h1>TES</h1>
-        <h2>JAM</h2>
-        <p>Attendance Status :</p>
+        <h1 v-if="data[1]?.class_name">{{ data[1]?.class_name }}</h1>
+        <p v-else>No Class Today</p>
+        <h2 v-if="data[1]?.class_time">{{ data[1]?.class_time }}</h2>
+
+        <p v-if="data.length > 1">
+          Attendance Status :
+          <span
+            :class="{
+              red: !isMarked(data[1]?.status),
+              green: isMarked(data[1]?.status),
+            }"
+            >{{ data[1]?.status }}</span
+          >
+        </p>
       </div>
     </div>
 
     <div class="presensi-button mt-auto">
-      <Button>
+      <Button @click="markAttendance">
         <span>Presensi</span>
       </Button>
     </div>
@@ -33,9 +54,46 @@
 <script setup>
 import Button from "primevue/button";
 import MenuBar from "./MenuBar.vue";
+import axios from "axios";
+import { onMounted, ref } from "vue";
+
+onMounted(() => {
+  getJadwal(nim);
+});
+
+const data = ref();
+const nim = localStorage.getItem("nim");
+
+const markAttendance = () => {
+  const path = "http://127.0.0.1:5000/mark-attendance";
+  axios
+    .get(path)
+    .then((response) => {
+      alert(response.data);
+      // Refresh the class schedule after marking attendance
+      getJadwal(nim);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const getJadwal = async (nim) => {
+  try {
+    const res = await axios.get(`http://127.0.0.1:5000/jadwalkelas?nim=${nim}`);
+    data.value = res.data.data;
+  } catch (err) {
+    console.log(err);
+    console.error("Error fetching class schedule:", err);
+  }
+};
+
+const isMarked = (status) => {
+  return status === "Marked";
+};
 </script>
 
-<style>
+<style scoped>
 .input {
   border-radius: 20px;
 }
@@ -56,5 +114,21 @@ import MenuBar from "./MenuBar.vue";
   box-shadow: -2px 8px 16px rgba(0, 0, 0, 0.15), 8px 0 16px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   width: 90%;
+}
+
+.not-marked {
+  background-color: #ffcccc; /* Red */
+}
+
+.marked {
+  background-color: #ccffcc; /* Green */
+}
+
+.red {
+  color: #ff0000; /* Red */
+}
+
+.green {
+  color: #008000; /* Green */
 }
 </style>

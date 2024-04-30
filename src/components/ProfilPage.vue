@@ -8,8 +8,8 @@
 
     <div class="shadow-box">
       <div class="d-flex flex-column profil-user w-50">
-        <h1 class="align-self-start">Richard Susanto</h1>
-        <p class="align-self-start">0123456789</p>
+        <h1 class="align-self-start">{{ fullname }}</h1>
+        <p class="align-self-start">{{ userNim }}</p>
 
         <div class="d-flex flex-column gap-2">
           <label for="email" class="d-flex align-items-start">Email</label>
@@ -45,7 +45,7 @@
       </div>
 
       <div class="profil-buttons d-flex flex-column">
-        <Button class="button" label="Edit Profil" />
+        <Button class="button" label="Edit Profil" @click="getProfil" />
         <Button class="button" label="Logout" severity="danger" />
       </div>
     </div>
@@ -58,9 +58,45 @@
 import MenuBar from "./MenuBar.vue";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
+import axios from "axios";
+import { ref } from "vue";
+import { onMounted } from "vue";
+
+onMounted(() => {
+  getProfil();
+});
+
+const userData = JSON.parse(localStorage.getItem("userData"));
+
+const fullname = userData.fullname;
+const userNim = userData.nim;
+const userEmail = userData.email;
+
+const profilData = ref();
+
+const getProfil = () => {
+  const nim = localStorage.getItem("nim");
+
+  axios
+    .get(`http://127.0.0.1:5000/users?nim=${nim}`)
+    .then((resp) => {
+      if (resp.data) {
+        profilData.value = resp.data[0];
+
+        console.log(profilData.value);
+      } else {
+        console.error(resp.data);
+        alert("Invalid user data");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("Error fetching user data");
+    });
+};
 </script>
 
-<style>
+<style scoped>
 .input {
   border-radius: 20px;
 }

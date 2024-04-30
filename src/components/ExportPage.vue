@@ -36,7 +36,7 @@ import { ref } from "vue";
 const periode = ref();
 </script>
 
-<style>
+<style scoped>
 .input {
   border-radius: 20px;
 }

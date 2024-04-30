@@ -3,6 +3,13 @@
     class="container d-flex justify-content-around align-items-center vh-100"
   >
     <div class="w-50">
+      <div>
+        <img
+          src="../assets/hadeer-high-resolution-logo-transparent.png"
+          width="200"
+          class="mb-4"
+        />
+      </div>
       <h1>Login</h1>
     </div>
 
@@ -36,19 +43,48 @@
 
 <script setup>
 import router from "@/router";
+import { ref } from "vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+
+const emailValue = ref();
+const passwordValue = ref();
+
+async function verifyLogin() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: emailValue.value,
+        password: passwordValue.value,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.status === "success") {
+      localStorage.setItem("userData", JSON.stringify(data.user));
+      router.push("/presensi");
+    } else {
+      console.log(data);
+      console.log(passwordValue.value);
+      alert(data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    console.log(passwordValue.value);
+  }
+}
 
 const goBack = () => {
   router.push("/");
 };
-
-const verifyLogin = () => {
-  router.push("/presensi");
-};
 </script>
 
-<style>
+<style scoped>
 .input {
   border-radius: 20px;
 }

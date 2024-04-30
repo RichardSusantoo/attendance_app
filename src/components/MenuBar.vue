@@ -16,7 +16,7 @@
 import { RouterLink } from "vue-router";
 </script>
 
-<style>
+<style scoped>
 .menubar {
   display: flex;
   margin-bottom: 2vh;
