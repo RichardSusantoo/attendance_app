@@ -46,6 +46,14 @@ import router from "@/router";
 import { ref } from "vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+import { onMounted } from "vue";
+
+onMounted(() => {
+  const userData = localStorage.getItem("userData");
+  if (userData) {
+    router.push("/presensi");
+  }
+});
 
 const emailValue = ref();
 const passwordValue = ref();

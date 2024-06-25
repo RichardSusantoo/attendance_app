@@ -45,8 +45,12 @@
       </div>
 
       <div class="profil-buttons d-flex flex-column">
-        <Button class="button" label="Edit Profil" @click="getProfil" />
-        <Button class="button" label="Logout" severity="danger" />
+        <Button
+          class="button"
+          label="Logout"
+          severity="danger"
+          @click="logout"
+        />
       </div>
     </div>
 
@@ -61,24 +65,34 @@ import InputText from "primevue/inputtext";
 import axios from "axios";
 import { ref } from "vue";
 import { onMounted } from "vue";
+import router from "@/router";
 
 onMounted(() => {
   getProfil();
+  const userData = localStorage.getItem("userData");
+  if (userData) {
+    router.push("/presensi");
+  } else {
+    router.push("/");
+  }
 });
 
 const userData = JSON.parse(localStorage.getItem("userData"));
 
-const fullname = userData.fullname;
-const userNim = userData.nim;
-const userEmail = userData.email;
+const fullname = userData?.fullname;
+const userNim = userData?.nim;
+const userEmail = userData?.email;
 
 const profilData = ref();
 
-const getProfil = () => {
-  const nim = localStorage.getItem("nim");
+const logout = () => {
+  localStorage.removeItem("userData");
+  router.push("/");
+};
 
+const getProfil = () => {
   axios
-    .get(`http://127.0.0.1:5000/users?nim=${nim}`)
+    .get(`http://127.0.0.1:5000/users?nim=${userNim}`)
     .then((resp) => {
       if (resp.data) {
         profilData.value = resp.data[0];
@@ -109,7 +123,7 @@ const getProfil = () => {
 }
 
 .profil-buttons {
-  justify-content: space-between;
+  justify-content: end;
 }
 
 .shadow-box {

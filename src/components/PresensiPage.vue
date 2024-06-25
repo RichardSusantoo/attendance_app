@@ -56,13 +56,22 @@ import Button from "primevue/button";
 import MenuBar from "./MenuBar.vue";
 import axios from "axios";
 import { onMounted, ref } from "vue";
+import router from "@/router";
 
 onMounted(() => {
-  getJadwal(nim);
+  getJadwal();
+  const userData = localStorage.getItem("userData");
+  if (userData) {
+    router.push("/presensi");
+  } else {
+    router.push("/");
+  }
 });
 
 const data = ref();
-const nim = localStorage.getItem("nim");
+const userData = JSON.parse(localStorage.getItem("userData"));
+
+const userNim = userData?.nim;
 
 const markAttendance = () => {
   const path = "http://127.0.0.1:5000/mark-attendance";
@@ -70,17 +79,18 @@ const markAttendance = () => {
     .get(path)
     .then((response) => {
       alert(response.data);
-      // Refresh the class schedule after marking attendance
-      getJadwal(nim);
+      getJadwal();
     })
     .catch((err) => {
       console.log(err);
     });
 };
 
-const getJadwal = async (nim) => {
+const getJadwal = async () => {
   try {
-    const res = await axios.get(`http://127.0.0.1:5000/jadwalkelas?nim=${nim}`);
+    const res = await axios.get(
+      `http://127.0.0.1:5000/jadwalkelas?nim=${userNim}`
+    );
     data.value = res.data.data;
   } catch (err) {
     console.log(err);

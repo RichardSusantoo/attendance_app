@@ -61,6 +61,14 @@ import { ref } from "vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import axios from "axios";
+import { onMounted } from "vue";
+
+onMounted(() => {
+  const userData = localStorage.getItem("userData");
+  if (userData) {
+    router.push("/presensi");
+  }
+});
 
 const namaValue = ref();
 const nimValue = ref();

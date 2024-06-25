@@ -33,6 +33,14 @@
 <script setup>
 import router from "@/router";
 import Button from "primevue/button";
+import { onMounted } from "vue";
+
+onMounted(() => {
+  const userData = localStorage.getItem("userData");
+  if (userData) {
+    router.push("/presensi");
+  }
+});
 
 const goToLogin = () => {
   router.push("/login");
