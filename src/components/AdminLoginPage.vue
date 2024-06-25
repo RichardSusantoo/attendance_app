@@ -10,7 +10,7 @@
           class="mb-4"
         />
       </div>
-      <h1>Login</h1>
+      <h1>Admin Login</h1>
     </div>
 
     <div class="shadow-box">
@@ -52,7 +52,7 @@ import { onMounted } from "vue";
 onMounted(() => {
   const userData = localStorage.getItem("userData");
   if (userData) {
-    router.push("/presensi");
+    router.push("/admin/profil");
   }
 });
 
@@ -61,7 +61,7 @@ const passwordValue = ref();
 
 async function verifyLogin() {
   try {
-    const response = await fetch("http://127.0.0.1:5000/login", {
+    const response = await fetch("http://127.0.0.1:5000/adminlogin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ async function verifyLogin() {
 
     if (data.status === "success") {
       localStorage.setItem("userData", JSON.stringify(data.user));
-      router.push("/presensi");
+      router.push("/admin/profil");
     } else {
       console.log(data);
       console.log(passwordValue.value);
@@ -89,7 +89,7 @@ async function verifyLogin() {
 }
 
 const goBack = () => {
-  router.push("/");
+  router.push("/admin");
 };
 </script>
 

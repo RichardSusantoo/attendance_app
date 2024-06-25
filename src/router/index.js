@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import AdminHomeView from "@/views/AdminHomeView.vue";
 
 const routes = [
   {
@@ -36,6 +37,35 @@ const routes = [
     name: "export",
     component: () =>
       import(/* webpackChunkName: "export" */ "../views/ExportView.vue"),
+  },
+  {
+    path: "/admin",
+    name: "homeAdmin",
+    component: AdminHomeView,
+  },
+  {
+    path: "/admin/login",
+    name: "loginAdmin",
+    component: () =>
+      import(/* webpackChunkName: "export" */ "../views/AdminLoginView.vue"),
+  },
+  {
+    path: "/admin/register",
+    name: "registerAdmin",
+    component: () =>
+      import(/* webpackChunkName: "export" */ "../views/AdminRegisterView.vue"),
+  },
+  {
+    path: "/admin/export",
+    name: "exportAdmin",
+    component: () =>
+      import(/* webpackChunkName: "export" */ "../views/AdminExportView.vue"),
+  },
+  {
+    path: "/admin/profil",
+    name: "profilAdmin",
+    component: () =>
+      import(/* webpackChunkName: "export" */ "../views/AdminProfilView.vue"),
   },
 ];
 

@@ -20,28 +20,6 @@
             v-model="userEmail"
           ></InputText>
         </div>
-
-        <div class="d-flex flex-column gap-2">
-          <label for="program-studi" class="d-flex align-items-start"
-            >Program Studi</label
-          >
-          <InputText
-            class="input"
-            id="program-studi"
-            disabled
-            v-model="userProgramStudi"
-          ></InputText>
-        </div>
-
-        <div class="d-flex flex-column gap-2">
-          <label for="jurusan" class="d-flex align-items-start">Jurusan</label>
-          <InputText
-            class="input"
-            id="jurusan"
-            disabled
-            v-model="userJurusan"
-          ></InputText>
-        </div>
       </div>
 
       <div class="profil-buttons d-flex flex-column">
@@ -54,12 +32,12 @@
       </div>
     </div>
 
-    <MenuBar></MenuBar>
+    <AdminMenuBar></AdminMenuBar>
   </div>
 </template>
 
 <script setup>
-import MenuBar from "./MenuBar.vue";
+import AdminMenuBar from "./AdminMenuBar.vue";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import axios from "axios";
@@ -71,7 +49,7 @@ onMounted(() => {
   getProfil();
   const userData = localStorage.getItem("userData");
   if (userData) {
-    router.push("/profil");
+    router.push("/admin/profil");
   } else {
     router.push("/");
   }
@@ -87,7 +65,7 @@ const profilData = ref();
 
 const logout = () => {
   localStorage.removeItem("userData");
-  router.push("/");
+  router.push("/admin");
 };
 
 const getProfil = () => {

@@ -8,12 +8,25 @@
 
     <div class="shadow-box">
       <div class="d-flex flex-column gap-2">
+        <label for="periode" class="d-flex align-items-start"
+          >Nama Mahasiswa</label
+        >
+        <Dropdown
+          v-model="selectedMahasiswa"
+          :options="listMahasiswa"
+          optionLabel="fullname_nim"
+          style="width: 20rem"
+          @click="getMahasiswa"
+        ></Dropdown>
+      </div>
+      <div class="d-flex flex-column gap-2">
         <label for="periode" class="d-flex align-items-start">Nama Kelas</label>
         <Dropdown
           v-model="selectedClass"
           :options="classNames"
           optionLabel="class_name"
           style="width: 20rem"
+          @click="getClassNames"
         ></Dropdown>
       </div>
     </div>
@@ -24,24 +37,23 @@
       </Button>
     </div>
 
-    <MenuBar />
+    <AdminMenuBar />
   </div>
 </template>
 
 <script setup>
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
-import MenuBar from "./MenuBar.vue";
+import AdminMenuBar from "./AdminMenuBar.vue";
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import * as XLSX from "xlsx";
 import router from "@/router";
 
 onMounted(() => {
-  getClassNames();
   const userData = localStorage.getItem("userData");
   if (userData) {
-    router.push("/export");
+    router.push("/admin/export");
   } else {
     router.push("/");
   }
@@ -63,15 +75,23 @@ const exportToExcel = async (options) => {
 };
 
 const selectedClass = ref();
+const selectedMahasiswa = ref();
 const classNames = ref();
-const userData = JSON.parse(localStorage.getItem("userData"));
+const listMahasiswa = ref();
 
-const userNim = userData?.nim;
+const getMahasiswa = async () => {
+  try {
+    const res = await axios.get(`http://127.0.0.1:5000/mahasiswa`);
+    listMahasiswa.value = res.data.data;
+  } catch (err) {
+    console.error("Error fetching mahasiswa:", err);
+  }
+};
 
 const getClassNames = async () => {
   try {
     const res = await axios.get(
-      `http://127.0.0.1:5000/getclassnames?nim=${userNim}`
+      `http://127.0.0.1:5000/getclassnames?nim=${selectedMahasiswa.value.nim}`
     );
     classNames.value = res.data.data;
   } catch (err) {
@@ -83,7 +103,7 @@ const getClassNames = async () => {
 const downloadExcel = async () => {
   try {
     const res = await axios.get(
-      `http://localhost:5000/fetch_attendance?nim=${userNim}&class_name=${selectedClass.value.class_name}`
+      `http://localhost:5000/fetch_attendance?nim=${selectedMahasiswa.value.nim}&class_name=${selectedClass.value.class_name}`
     );
     const data = res.data.data.map((data) => {
       return {

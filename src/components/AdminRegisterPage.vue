@@ -10,10 +10,15 @@
           class="mb-4"
         />
       </div>
-      <h1>Login</h1>
+      <h1>Admin Register</h1>
     </div>
 
     <div class="shadow-box">
+      <div class="d-flex flex-column gap-2">
+        <label for="nama" class="d-flex align-items-start">Nama</label>
+        <InputText class="input" id="name" v-model="namaValue"></InputText>
+      </div>
+
       <div class="d-flex flex-column gap-2">
         <label for="email" class="d-flex align-items-start">Email</label>
         <InputText class="input" id="email" v-model="emailValue"></InputText>
@@ -24,7 +29,6 @@
         <InputText
           class="input"
           id="password"
-          type="password"
           v-model="passwordValue"
         ></InputText>
       </div>
@@ -36,7 +40,7 @@
           severity="danger"
           @click="goBack"
         ></Button>
-        <Button class="button" label="Login" @click="verifyLogin"></Button>
+        <Button class="button" label="Submit" @click="submitData"></Button>
       </div>
     </div>
   </div>
@@ -47,49 +51,41 @@ import router from "@/router";
 import { ref } from "vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+import axios from "axios";
 import { onMounted } from "vue";
 
 onMounted(() => {
   const userData = localStorage.getItem("userData");
   if (userData) {
-    router.push("/presensi");
+    router.push("/admin/profil");
   }
 });
 
+const namaValue = ref();
 const emailValue = ref();
 const passwordValue = ref();
 
-async function verifyLogin() {
-  try {
-    const response = await fetch("http://127.0.0.1:5000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: emailValue.value,
-        password: passwordValue.value,
-      }),
+const submitData = () => {
+  const path = "http://127.0.0.1:5000/registeradmin";
+  axios
+    .post(path, {
+      fullname: namaValue.value,
+      email: emailValue.value,
+      password: passwordValue.value,
+    })
+    .then((response) => {
+      console.log(response);
+
+      router.push("/admin");
+    })
+    .catch((err) => {
+      console.log(namaValue);
+      console.log(err);
     });
-
-    const data = await response.json();
-
-    if (data.status === "success") {
-      localStorage.setItem("userData", JSON.stringify(data.user));
-      router.push("/presensi");
-    } else {
-      console.log(data);
-      console.log(passwordValue.value);
-      alert(data.message);
-    }
-  } catch (error) {
-    console.error(error);
-    console.log(passwordValue.value);
-  }
-}
+};
 
 const goBack = () => {
-  router.push("/");
+  router.push("/admin");
 };
 </script>
 
